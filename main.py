@@ -59,6 +59,8 @@ def approve(conexao, contrato):
 
 
 async def filter_message(msg:str):
+    #just for debugging
+    print(f"{'*'*30}msg{'*'*30}\n{msg}")
     if not msg:
         print("eh bait, tem mensagem nao")
         return None
