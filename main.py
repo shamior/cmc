@@ -60,7 +60,7 @@ def approve(conexao, contrato):
 
 async def filter_message(msg:str):
     #just for debugging
-    print(f"{'*'*30}msg{'*'*30}\n{msg}")
+    print(f"\n{'*'*35} msg {'*'*35}\n{msg}\n{'*'*75}\n")
     if not msg:
         print("eh bait, tem mensagem nao")
         return None
@@ -184,7 +184,6 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 
 @telegram.on(events.NewMessage(chats=config.CHAT))
 async def message_handler(event):
-    print(event.raw_text)
     filtered_message = await filter_message(event.raw_text)
     if filtered_message == None:
         return
