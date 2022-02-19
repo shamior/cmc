@@ -112,7 +112,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         abi=abis.TOKEN
     )
     if pair != 'BUSD':
-        path = [address.busd, address.address[pair], token]
+        path = [address.busd, address.coins[pair], token]
     else:
         path = [address.busd, token]
     tx = swapExactTokensForTokens(
