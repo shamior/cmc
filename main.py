@@ -156,8 +156,9 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
             time_passed = time.perf_counter() - start
             preco_atual = get_price(router_contract, token, address.coins[pair], decimals)
             atual = f"Preco atual: {preco_atual:.10f}\n"
+            balanca_atual = f"Total atual: {preco_atual*balance_normalized:.10f}\n"
             system('clear')
-            print(comprado+atual+target_str)
+            print(comprado+atual+target_str+balanca_atual)
             if preco_atual >= target:
                 if time_passed < 20:
                     print("Target reached too fast, waiting for more profit")
@@ -165,8 +166,8 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
                     print("Target reached!!")
                     sell(router_contract, conexao, balance, path)
                     target_reached = True
-            elif preco_atual*balance_normalized*((100-sell_fee)/100) <= config.AMOUNT * .9:
-                if time_passed > 60:
+            elif balanca_atual*((100-sell_fee)/100) <= config.AMOUNT * .9:
+                if time_passed > 50:
                     #se perdeu 10% doq investiu
                     #se passou mais de 1 minuto
                     #entao vende
