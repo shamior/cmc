@@ -2,7 +2,7 @@ from web3 import Web3
 
 CHAT = "@CMC_fastest_alerts"
 WALLET = Web3.toChecksumAddress('0xb0ea8ed80dE7B313672c161748d842e4295Ca864')
-AMOUNT = 10
+AMOUNT = 0.1
 GWEI = 8
 TARGET = 1.2
 MAX_TAX = 12
