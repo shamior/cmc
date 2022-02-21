@@ -1,7 +1,7 @@
 from web3 import Web3
 import time
 from os import system
-from telethon.sync import TelegramClient
+from telethon.sync import TelegramClient, events
 from telethon import functions, types, utils
 #from pyrogram import Client
 from datetime import datetime
@@ -194,7 +194,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         print(tx['tx_hash'])
 
 
-@telegram.on_message()
+@telegram.on(events.NewMessage())
 async def message_handler(client, event):
     print(event.text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
