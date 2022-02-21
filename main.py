@@ -195,7 +195,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 
 
 @telegram.on(events.NewMessage())
-async def message_handler(client, event):
+async def message_handler(event):
     print(event.text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
     # filtered_message = await filter_message(event.raw_text)
@@ -269,17 +269,26 @@ def get_price(router_contract, token, pair, decimals):
     return value
 
 async def get_difference():
+    asyncio.sleep(5)
+    try:
+        # Wrap the ID inside a peer to ensure we get a channel back.
+        where = await telegram.get_input_entity(types.PeerChannel(CMC_ID))
+    except ValueError:
+        # There's a high chance that this fails, since
+        # we are getting the difference to fetch entities.
+        return
+
     if not pts:
         # First-time, can't get difference. Get pts instead.
         result = await telegram(functions.channels.GetFullChannelRequest(
-            utils.get_input_channel(config.CHAT)
+            utils.get_input_channel(where)
         ))
-        telegram._state_cache[channel_id] = result.full_chat.pts
+        telegram._state_cache[CMC_ID] = result.full_chat.pts
         pts = result.full_chat.pts
         return
 
     result = await telegram(functions.updates.GetChannelDifferenceRequest(
-        channel=config.CHAT,
+        channel=where,
         filter=types.ChannelMessagesFilterEmpty(),
         pts=pts,  # just pts
         limit=100,
@@ -288,10 +297,8 @@ async def get_difference():
 
 
 async def main():
-    # while True:
-    #     await asyncio.sleep(5)
-    async for dialog in telegram.iter_dialogs():
-        print(dialog.name, 'has ID', dialog.id)
+    while True:
+        await get_difference()
         
 
 
