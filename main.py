@@ -2,6 +2,7 @@ from web3 import Web3
 import time
 from os import system
 from telethon import TelegramClient, events
+from datetime import datetime
 
 
 import secret
@@ -98,6 +99,8 @@ def sell(router_contract, conexao, balance, path):
 
 
 async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
+    handle_buy_called_time = datetime.now().strftime("%H:%M:%S") + '\n'
+    print(f"Tempo que foi chamado: {handle_buy_called_time}")
     conexao = Web3(
         Web3.WebsocketProvider(
             secret.moralis_ws
@@ -160,7 +163,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
             atual = f"Preco atual: {preco_atual:.10f}\n"
             balanca_atual = f"Total atual: {preco_atual*balance_normalized:.10f}\n"
             system('clear')
-            print(comprado+atual+target_str+balanca_atual)
+            print(handle_buy_called_time+comprado+atual+target_str+balanca_atual)
             if preco_atual >= target:
                 if time_passed < 20:
                     print("Target reached too fast, waiting for more profit")
@@ -187,6 +190,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 
 @telegram.on(events.NewMessage(chats=config.CHAT))
 async def message_handler(event):
+    print(datetime.now().strftime("%H:%M:%S"))
     filtered_message = await filter_message(event.raw_text)
     if filtered_message == None:
         return
