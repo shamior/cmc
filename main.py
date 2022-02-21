@@ -79,13 +79,14 @@ async def filter_message(msg:str):
 
 
 def sell(router_contract, conexao, balance, path):
-    tx = swapExactTokensForTokens(router_contract, conexao, config.WALLET, balance, path)
+    gwei_venda = 5*10**9
+    tx = swapExactTokensForTokens(router_contract, conexao, config.WALLET, balance, path, gwei_venda)
     if tx['status']:
         print("Sucesso na venda")
     else:
         print("Fail na venda")
         print("Tentando novamente!")
-        tx = swapExactTokensForTokens(router_contract, conexao, config.WALLET, balance, path)
+        tx = swapExactTokensForTokens(router_contract, conexao, config.WALLET, balance, path, gwei_venda)
         if tx['status']:
             print("Sucesso!")
         else:
@@ -119,8 +120,9 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         router_contract,
         conexao,
         config.WALLET,
-        int(config.amount*10**18),
-        path
+        int(config.AMOUNT*10**18),
+        path,
+        int(config.GWEI*10**9)
     )
 
     if tx['status']:
@@ -146,7 +148,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
             else:
                 print("Fail")
                 exit()
-        target = (preco_comprado * config.target)/((100-sell_fee)/100)
+        target = (preco_comprado * config.TARGET)/((100-sell_fee)/100)
         target_str = f"Target: {target:.10f}\n"
         path.reverse()
         balance_normalized = balance * 10**-decimals
@@ -210,7 +212,7 @@ async def message_handler(event):
 
 
 
-def swapExactTokensForTokens(router_contract, conexao, wallet, amountIn, path):
+def swapExactTokensForTokens(router_contract, conexao, wallet, amountIn, path, gwei):
     amountOutMin = int(0.0000001e18)
     #Function: swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)
     tx = router_contract.functions.swapExactTokensForTokensSupportingFeeOnTransferTokens(
@@ -223,7 +225,7 @@ def swapExactTokensForTokens(router_contract, conexao, wallet, amountIn, path):
         {
             'from': wallet,
             'gas': 2000000,
-            'gasPrice': int(config.gwei*10**9),
+            'gasPrice': gwei,
             'nonce': conexao.eth.get_transaction_count(wallet)
         }
     )
