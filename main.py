@@ -273,5 +273,7 @@ def get_price(router_contract, token, pair, decimals):
 
 print("Esperando mensagem...")
 
-telegram.start()
-telegram.run_until_disconnected()
+telegram.run()
+
+#telegram.start()
+#telegram.run_until_disconnected()
