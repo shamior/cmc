@@ -198,6 +198,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 async def message_handler(event):
     print(event.raw_text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
+    print(f'msg: {event.message.date.strftime("%H:%M:%S")}')
     # filtered_message = await filter_message(event.raw_text)
     # if filtered_message == None:
     #     return
@@ -270,7 +271,7 @@ def get_price(router_contract, token, pair, decimals):
 
 async def get_difference():
     global pts
-    asyncio.sleep(5)
+    await asyncio.sleep(5)
     try:
         # Wrap the ID inside a peer to ensure we get a channel back.
         where = await telegram.get_input_entity(types.PeerChannel(CMC_ID))
