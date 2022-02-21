@@ -2,6 +2,7 @@ from web3 import Web3
 import time
 from os import system
 from telethon import TelegramClient, events
+from pyrogram import Client
 from datetime import datetime
 
 
@@ -12,7 +13,7 @@ import abis
 
 
 session = 'anon'
-telegram = TelegramClient(session, secret.api_id, secret.api_hash)
+telegram = Client(session, api_id=secret.api_id, api_hash=secret.api_hash)
 ADDRESS = 3
 LIQUIDITY = 4
 BUY_FEE = 7
@@ -189,30 +190,31 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         print(tx['tx_hash'])
 
 
-@telegram.on(events.NewMessage())
-async def message_handler(event):
-    print(datetime.now().strftime("%H:%M:%S"))
-    print(event.message.date.strftime("%H:%M:%S"))
-    filtered_message = await filter_message(event.raw_text)
-    if filtered_message == None:
-        return
-    address, liq_amount, pair, buy_fee, sell_fee = filtered_message
+@telegram.on_message()
+async def message_handler(client, event):
+    print(event)
+    # print(datetime.now().strftime("%H:%M:%S"))
+    # print(event.message.date.strftime("%H:%M:%S"))
+    # filtered_message = await filter_message(event.raw_text)
+    # if filtered_message == None:
+    #     return
+    # address, liq_amount, pair, buy_fee, sell_fee = filtered_message
 
-    if buy_fee + sell_fee > config.MAX_TAX:
-        print("Taxas muito altas!")
-        return
-    if pair == "BNB":
-        liq_amount *= 400
-    if liq_amount < config.MIN_LIQUIDITY:
-        print("Liquidez muito baixa")
-        return
-    if liq_amount > config.MAX_LIQUIDITY:
-        print("Liquidez muito alta")
-        if buy_fee + sell_fee > 0:
-            return
-        print("Mas o token nao tem taxas")
-    await handle_buy(address, liq_amount, pair, buy_fee, sell_fee)
-    exit()
+    # if buy_fee + sell_fee > config.MAX_TAX:
+    #     print("Taxas muito altas!")
+    #     return
+    # if pair == "BNB":
+    #     liq_amount *= 400
+    # if liq_amount < config.MIN_LIQUIDITY:
+    #     print("Liquidez muito baixa")
+    #     return
+    # if liq_amount > config.MAX_LIQUIDITY:
+    #     print("Liquidez muito alta")
+    #     if buy_fee + sell_fee > 0:
+    #         return
+    #     print("Mas o token nao tem taxas")
+    # await handle_buy(address, liq_amount, pair, buy_fee, sell_fee)
+    # exit()
 
 
 
