@@ -1,9 +1,11 @@
 from web3 import Web3
 import time
 from os import system
-from telethon import TelegramClient, events
-from pyrogram import Client
+from telethon.sync import TelegramClient
+from telethon import functions, types, utils
+#from pyrogram import Client
 from datetime import datetime
+import asyncio
 
 
 import secret
@@ -13,12 +15,14 @@ import abis
 
 
 session = 'anon'
-telegram = Client(session, api_id=secret.api_id, api_hash=secret.api_hash)
+telegram = TelegramClient(session, api_id=secret.api_id, api_hash=secret.api_hash)
 ADDRESS = 3
 LIQUIDITY = 4
 BUY_FEE = 7
 SELL_FEE = 8
 PLATFORM = 10
+CMC_ID = -1001519789792
+pts = None
 
 
 
@@ -194,7 +198,6 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 async def message_handler(client, event):
     print(event.text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
-    print(f'msg: {datetime.utcfromtimestamp(event.date).strftime("%H:%M:%S")}')
     # filtered_message = await filter_message(event.raw_text)
     # if filtered_message == None:
     #     return
@@ -215,7 +218,6 @@ async def message_handler(client, event):
     #     print("Mas o token nao tem taxas")
     # await handle_buy(address, liq_amount, pair, buy_fee, sell_fee)
     # exit()
-
 
 
 
@@ -254,10 +256,6 @@ def swapExactTokensForTokens(router_contract, conexao, wallet, amountIn, path, g
 
 
 
-
-
-
-
 def get_price(router_contract, token, pair, decimals):
     value = router_contract.functions.getAmountsOut(
         10**decimals, [token, pair]
@@ -270,10 +268,37 @@ def get_price(router_contract, token, pair, decimals):
         ).call()[1]*10**-18
     return value
 
+async def get_difference():
+    if not pts:
+        # First-time, can't get difference. Get pts instead.
+        result = await telegram(functions.channels.GetFullChannelRequest(
+            utils.get_input_channel(config.CHAT)
+        ))
+        telegram._state_cache[channel_id] = result.full_chat.pts
+        pts = result.full_chat.pts
+        return
+
+    result = await telegram(functions.updates.GetChannelDifferenceRequest(
+        channel=config.CHAT,
+        filter=types.ChannelMessagesFilterEmpty(),
+        pts=pts,  # just pts
+        limit=100,
+        force=True
+    ))
+
+
+async def main():
+    # while True:
+    #     await asyncio.sleep(5)
+    async for dialog in telegram.iter_dialogs():
+        print(dialog.name, 'has ID', dialog.id)
+        
+
+
 
 print("Esperando mensagem...")
 
 telegram.run()
 
-#telegram.start()
+telegram.loop.run_until_complete(main())
 #telegram.run_until_disconnected()
