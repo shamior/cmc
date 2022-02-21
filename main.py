@@ -194,7 +194,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         print(tx['tx_hash'])
 
 
-@telegram.on(events.NewMessage(config.CHAT))
+@telegram.on(events.NewMessage(chats=config.CHAT))
 async def message_handler(event):
     print(event.raw_text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
