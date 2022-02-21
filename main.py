@@ -194,7 +194,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 async def message_handler(client, event):
     print(event.text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
-    print(f'msg: {event.date.strftime("%H:%M:%S")}')
+    print(f'msg: {datetime.utcfromtimestamp(event.date).strftime("%H:%M:%S")}')
     # filtered_message = await filter_message(event.raw_text)
     # if filtered_message == None:
     #     return
