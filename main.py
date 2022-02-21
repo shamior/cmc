@@ -192,9 +192,9 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
 
 @telegram.on_message()
 async def message_handler(client, event):
-    print(event)
-    # print(datetime.now().strftime("%H:%M:%S"))
-    # print(event.message.date.strftime("%H:%M:%S"))
+    print(event.text)
+    print(f'now: {datetime.now().strftime("%H:%M:%S")}')
+    print(f'msg: {event.date.timestamp.strftime("%H:%M:%S")}')
     # filtered_message = await filter_message(event.raw_text)
     # if filtered_message == None:
     #     return
