@@ -298,7 +298,7 @@ async def main():
 
 print("Esperando mensagem...")
 
-telegram.run()
+telegram.start()
 
 telegram.loop.run_until_complete(main())
 #telegram.run_until_disconnected()
