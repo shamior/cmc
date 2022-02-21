@@ -112,9 +112,9 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         abi=abis.TOKEN
     )
     if pair != 'BUSD':
-        path = [address.busd, address.coins[pair], token]
+        path = [address.BUSD, address.coins[pair], token]
     else:
-        path = [address.busd, token]
+        path = [address.BUSD, token]
     tx = swapExactTokensForTokens(
         router_contract,
         conexao,
@@ -254,9 +254,9 @@ def get_price(router_contract, token, pair, decimals):
     ).call()[1]*10**-decimals
     if decimals != 18:
         value = value*10**-(18-decimals)
-    if pair == address.bnb:
+    if pair == address.BNB:
         value *= router_contract.functions.getAmountsOut(
-            10**18, [address.bnb, address.busd]
+            10**18, [address.BNB, address.BUSD]
         ).call()[1]*10**-18
     return value
 
