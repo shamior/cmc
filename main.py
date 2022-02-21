@@ -136,13 +136,13 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         target_reached = False
         print(comprado)
         print("Tentando aprovar o token para venda")
-        tx = approve(tk_contract)
+        tx = approve(conexao, tk_contract)
         if tx['status']:
             print("Sucesso!")
         else:
             print("Fail!")
             print("Tentando novamente")
-            tx = approve(tk_contract)
+            tx = approve(conexao, tk_contract)
             if tx['status']:
                 print("Sucesso!")
             else:
