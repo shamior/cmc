@@ -269,6 +269,7 @@ def get_price(router_contract, token, pair, decimals):
     return value
 
 async def get_difference():
+    global pts
     asyncio.sleep(5)
     try:
         # Wrap the ID inside a peer to ensure we get a channel back.
