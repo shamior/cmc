@@ -135,7 +135,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         decimals = tk_contract.functions.decimals().call()
         balance = tk_contract.functions.balanceOf(config.WALLET).call()
         preco_comprado = config.AMOUNT/(balance*10**-decimals)
-        comprado = f"Preco comprado: {preco_comprado:.10f}\n"
+        comprado = f"Preco comprado: {preco_comprado:.14f}\n"
         target_reached = False
         print(comprado)
         print("Tentando aprovar o token para venda")
@@ -152,7 +152,7 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
                 print("Fail")
                 exit()
         target = (preco_comprado * config.TARGET)/((100-sell_fee)/100)
-        target_str = f"Target: {target:.10f}\n"
+        target_str = f"Target: {target:.14f}\n"
         path.reverse()
         balance_normalized = balance * 10**-decimals
         start = time.perf_counter()
@@ -160,10 +160,11 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
             time.sleep(1)
             time_passed = time.perf_counter() - start
             preco_atual = get_price(router_contract, token, address.coins[pair], decimals)
-            atual = f"Preco atual: {preco_atual:.10f}\n"
-            balanca_atual = f"Total atual: {preco_atual*balance_normalized:.10f}\n"
+            atual = f"Preco atual: {preco_atual:.14f}\n"
+            balanca_atual = preco_atual * balance_normalized
+            balanca_atual_str = f"Total atual: {balanca_atual:.14f}\n"
             system('clear')
-            print(handle_buy_called_time+comprado+atual+target_str+balanca_atual)
+            print(handle_buy_called_time+comprado+atual+target_str+balanca_atual_str)
             if preco_atual >= target:
                 if time_passed < 20:
                     print("Target reached too fast, waiting for more profit")
@@ -188,9 +189,10 @@ async def handle_buy(tk_address, liq_amount, pair, buy_fee, sell_fee):
         print(tx['tx_hash'])
 
 
-@telegram.on(events.NewMessage(chats=config.CHAT))
+@telegram.on(events.NewMessage())
 async def message_handler(event):
     print(datetime.now().strftime("%H:%M:%S"))
+    print(event)
     filtered_message = await filter_message(event.raw_text)
     if filtered_message == None:
         return
