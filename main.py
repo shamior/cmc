@@ -217,7 +217,7 @@ async def message_handler(event):
 
 
 def swapExactTokensForTokens(router_contract, conexao, wallet, amountIn, path, gwei):
-    amountOutMin = int(0.0000001e18)
+    amountOutMin = 0
     #Function: swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)
     tx = router_contract.functions.swapExactTokensForTokensSupportingFeeOnTransferTokens(
         amountIn,                   #amountIn
