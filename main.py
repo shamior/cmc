@@ -270,7 +270,7 @@ def get_price(router_contract, token, pair, decimals):
 
 async def get_difference():
     global pts
-    await asyncio.sleep(1)
+    await asyncio.sleep(.5)
     try:
         # Wrap the ID inside a peer to ensure we get a channel back.
         where = await telegram.get_input_entity(types.PeerChannel(CMC_ID))
