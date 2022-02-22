@@ -199,26 +199,26 @@ async def message_handler(event):
     print(event.raw_text)
     print(f'now: {datetime.now().strftime("%H:%M:%S")}')
     print(f'msg: {event.message.date.strftime("%H:%M:%S")}')
-    # filtered_message = await filter_message(event.raw_text)
-    # if filtered_message == None:
-    #     return
-    # address, liq_amount, pair, buy_fee, sell_fee = filtered_message
+    filtered_message = await filter_message(event.raw_text)
+    if filtered_message == None:
+        return
+    address, liq_amount, pair, buy_fee, sell_fee = filtered_message
 
-    # if buy_fee + sell_fee > config.MAX_TAX:
-    #     print("Taxas muito altas!")
-    #     return
-    # if pair == "BNB":
-    #     liq_amount *= 400
-    # if liq_amount < config.MIN_LIQUIDITY:
-    #     print("Liquidez muito baixa")
-    #     return
-    # if liq_amount > config.MAX_LIQUIDITY:
-    #     print("Liquidez muito alta")
-    #     if buy_fee + sell_fee > 0:
-    #         return
-    #     print("Mas o token nao tem taxas")
-    # await handle_buy(address, liq_amount, pair, buy_fee, sell_fee)
-    # exit()
+    if buy_fee + sell_fee > config.MAX_TAX:
+        print("Taxas muito altas!")
+        return
+    if pair == "BNB":
+        liq_amount *= 400
+    if liq_amount < config.MIN_LIQUIDITY:
+        print("Liquidez muito baixa")
+        return
+    if liq_amount > config.MAX_LIQUIDITY:
+        print("Liquidez muito alta")
+        if buy_fee + sell_fee > 0:
+            return
+        print("Mas o token nao tem taxas")
+    await handle_buy(address, liq_amount, pair, buy_fee, sell_fee)
+    exit()
 
 
 
@@ -271,7 +271,7 @@ def get_price(router_contract, token, pair, decimals):
 
 async def get_difference():
     global pts
-    await asyncio.sleep(5)
+    await asyncio.sleep(1)
     try:
         # Wrap the ID inside a peer to ensure we get a channel back.
         where = await telegram.get_input_entity(types.PeerChannel(CMC_ID))
@@ -310,4 +310,3 @@ print("Esperando mensagem...")
 telegram.start()
 
 telegram.loop.run_until_complete(main())
-#telegram.run_until_disconnected()
